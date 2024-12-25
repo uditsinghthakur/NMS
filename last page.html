@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student-Teacher Document Upload</title>
+    <style>
+        body {
+            background-repeat:no-repeat;
+            background-attachment: fixed;
+            background-size: 100% 100%;
+            background-image:radial-gradient(circle,white,black);
+            font-family: Arial, sans-serif;
+        }
+        /* Basic styling for sections */
+        .section {
+            padding: 20px;
+            border: 1px solid #ccc;
+            margin: 10px;
+            border-radius: 8px;
+        }
+
+        /* Styling for student section */
+        .student-section {
+            background-color: #be9f9f;
+        }
+
+        /* Styling for teacher section */
+        .teacher-section {
+            background-color: #5c9aae;
+        }
+
+        /* Center the headings */
+        h2 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* Style the file input */
+        input[type="file"] {
+            display: none;
+        }
+
+        label {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #053034;
+            color: #fff;
+            border-radius: 4px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        label:hover {
+            background-color: #45a049;
+        }
+
+        /* Style the comment form */
+        .comment-form {
+            margin-top: 20px;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e3e0e0;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        .comment-form button {
+            cursor: pointer;
+            padding: 10px;
+            background-color: #053034;
+            color: #fff;
+            border-radius: 4px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        /* Style comment threads */
+        .comment-thread {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+
+        .comment {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <br>
+    <!-- Student Section -->
+    <div class="section student-section">
+        <h2>Student Notes</h2>
+        <br>
+        <br>
+        <input type="file" id="student-upload" accept=".pdf, .doc, .docx">
+        <label for="student-upload">Upload Student Notes</label>
+        <br>
+        <div id="student-preview"></div> <!-- Display area for the uploaded document -->
+        <form class="comment-form">
+            <textarea id="student-comment" placeholder="Leave a comment"></textarea>
+            <button type="button" onclick="addComment('student-comment', 'student-thread')">Submit Comment</button>
+        </form>
+        <div id="student-thread" class="comment-thread"></div> <!-- Display submitted comments -->
+    </div>
+    <br>
+<br>
+<br>
+    <!-- Teacher Section -->
+    <div class="section teacher-section">
+        <h2>Teachers Notes</h2>
+        <br>
+        <br>
+        <input type="file" id="teacher-upload" accept=".pdf, .doc, .docx">
+        <label for="teacher-upload">Upload Teacher Notes</label>
+        <div id="teacher-preview"></div> <!-- Display area for the uploaded document -->
+        <form class="comment-form">
+            <textarea id="teacher-comment" placeholder="Leave a comment"></textarea>
+            <button type="button" onclick="addComment('teacher-comment', 'teacher-thread')">Submit Comment</button>
+        </form>
+        <div id="teacher-thread" class="comment-thread"></div> <!-- Display submitted comments -->
+    </div>
+    <br>
+
+    <script>
+        let studentFile; // Store the uploaded student document
+        let teacherFile; // Store the uploaded teacher document
+
+        // Function to display uploaded document
+        function displayDocument(input, previewId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const preview = document.getElementById(previewId);
+                    const documentLink = `<p>Uploaded Document:</p><a href="${e.target.result}" target="_blank">${file.name}</a>`;
+                    preview.innerHTML += documentLink; // Append to existing content
+                };
+                reader.readAsDataURL(file);
+
+                // Store the uploaded file
+                if (previewId === 'student-preview') {
+                    studentFile = file;
+                } else if (previewId === 'teacher-preview') {
+                    teacherFile = file;
+                }
+            }
+        }
+
+        // Function to add comments
+        function addComment(commentId, threadId) {
+            const commentText = document.getElementById(commentId).value;
+            if (commentText.trim() !== '') {
+                const commentThread = document.getElementById(threadId);
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'comment';
+                commentDiv.textContent = commentText;
+                commentThread.appendChild(commentDiv);
+                document.getElementById(commentId).value = ''; // Clear the input
+            }
+        }
+
+        // Call the function when a file is selected
+        document.getElementById('student-upload').addEventListener('change', function () {
+            displayDocument(this, 'student-preview');
+        });
+
+        document.getElementById('teacher-upload').addEventListener('change', function () {
+            displayDocument(this, 'teacher-preview');
+        });
+    </script>
+</body>
+</html>
